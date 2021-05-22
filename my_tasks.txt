@@ -1,0 +1,82 @@
+Так как я делала проект достаточно долго и искать в терминале, как я создавала пользователей достаточно проблематично - с 1 по 6 я просто показываю, что они по фактцу созданы. 
+
+1. Создать двух пользователей (с помощью метода User.objects.create_user).
+
+	>>> User.objects.all()[:2]
+	<QuerySet [<User: Vika>, <User: Slava>]>
+
+2. Создать два объекта модели Author, связанные с пользователями.
+
+	>>> Author.objects.all()[:2]
+	<QuerySet [<Author: Author object (1)>, <Author: Author object (2)>]>
+
+3. Добавить 4 категории в модель Category.
+
+>>> Category.objects.all()[:4]
+<QuerySet [<Category: Category object (1)>, <Category: Category object (2)>, <Category: Category objec
+t (3)>, <Category: Category object (4)>]>
+
+4. Добавить 2 статьи и 1 новость.
+
+>>> print(Post.objects.all().values('post_category_type', 'rating'))
+<QuerySet [{'post_category_type': 'AP', 'rating': 0}, {'post_category_type': 'AP', 'rating': 0}, {'pos
+t_category_type': 'AP', 'rating': 0}, {'post_category_type': 'AP', 'rating': 0}, {'post_category_type'
+: 'NW', 'rating': 0}, {'post_category_type': 'NW', 'rating': 0}, {'post_category_type': 'NW', 'rating'
+: 0}, {'post_category_type': 'AP', 'rating': 2}]>
+
+5. Присвоить им категории (как минимум в одной статье/новости должно быть не меньше 2 категорий)
+
+>>> Post.objects.all().values('post_title', 'post_category')
+<QuerySet [{'post_title': 'ArticleTitle01', 'post_category': 1}, {'post_title': 'ArticleTitle01', 'pos
+t_category': 2}, {'post_title': 'ArticleTitle01', 'post_category': 2}, {'post_title': 'ArticleTitle01'
+, 'post_category': 3}, {'post_title': 'ArticleTitle01', 'post_category': 4}, {'post_title': 'ArticleTi
+tle01', 'post_category': None}, {'post_title': 'NewsTitle01', 'post_category': None}, {'post_title': '
+NewsTitle0021', 'post_category': None}, {'post_title': 'NewsTitle01', 'post_category': None}, {'post_t
+itle': 'ArticleTitle01', 'post_category': None}]>
+
+6. Создать как минимум 4 комментария к разным объектам модели Post (в каждом объекте должен быть как минимум один комментарий).
+
+>>> Comment.objects.all().values('comment_post', 'content')
+<QuerySet [{'comment_post': 1, 'content': 'anytext'}, {'comment_post': 1, 'content': 'any2texttt'}, {'
+comment_post': 2, 'content': 'nice'}, {'comment_post': 3, 'content': 'like'}, {'comment_post': 4, 'con
+tent': 'like'}, {'comment_post': 8, 'content': 'Текст_статьи_комментария_18'}]>
+
+
+7. Применяя функции like() и dislike() к статьям/новостям и комментариям, скорректировать рейтинги этих объектов.
+
+comment18.like()
+comment18.dislike()
+
+comment18.rating
+1
+
+
+
+8. Обновить рейтинги пользователей.
+author18.update_rating()
+
+9. Вывести username и рейтинг лучшего пользователя (применяя сортировку и возвращая поля первого объекта).
+
+>>> best_authors = Author.objects.order_by('-authors_rating')[:2]
+>>> for i in best_authors:
+...     i.authors
+...     i.authors_rating
+...
+<User: Vikua>
+15
+<User: Vikaaaa>
+1
+
+10. Вывести дату добавления, username автора, рейтинг, заголовок и превью лучшей статьи, основываясь на лайках/дислайках к этой статье.
+
+>>> Post.objects.all().order_by('-rating').values('create_datetime', 'author__authors__username', 'rating', 'post_title', 'content')[0]
+{'create_datetime': datetime.datetime(2021, 5, 22, 13, 37, 7, 566788, tzinfo=<UTC>), 'author__authors_
+_username': 'Vikua', 'rating': 2, 'post_title': 'ArticleTitle01', 'content': 'ArticleText01'}
+
+11. Вывести все комментарии (дата, пользователь, рейтинг, текст) к этой статье.
+
+>>> Comment.objects.filter(comment_post=8).order_by().values('create_datetime', 'comment_username__use
+rname', 'comment_post', 'rating', 'content')[0]
+{'create_datetime': datetime.datetime(2021, 5, 22, 13, 37, 51, 486723, tzinfo=<UTC>), 'comment_usernam
+e__username': 'Vikulya', 'comment_post': 8, 'rating': 2, 'content': 'Текст_статьи_комментария_18'}
+>>>
